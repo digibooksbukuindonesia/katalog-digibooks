@@ -46,7 +46,8 @@
   .no-data { text-align:center; padding:30px 0; color:#666; }
 </style>
 </head>
-<body oncontextmenu="return false;" onkeydown="return false;" ondragstart="return false;" onselectstart="return false;">
+
+<body oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;">
   <div class="container">
     <h1>📚 Katalog DigiBooks</h1>
 
@@ -68,7 +69,7 @@
       <div class="top-row mb-2">
         <div class="badge-total"><strong>Total Koleksi:</strong> <span id="totalCount">0</span> item</div>
         <div style="display:flex; gap:8px; align-items:center;">
-          <input id="globalSearch" class="form-control" placeholder="🔍 Cari seluruh tabel..." style="min-width:240px;">
+          <input id="globalSearch" class="form-control allow-input" placeholder="🔍 Cari seluruh tabel..." style="min-width:240px;">
         </div>
       </div>
 
@@ -157,10 +158,6 @@
     // Aktifkan copy hanya untuk kolom "Kode Order"
     const orderColIndex = allKeys.findIndex(k => k.toLowerCase().includes('kode order'));
     if (orderColIndex >= 0) {
-      $('#katalog tbody').on('copy', 'td:nth-child('+(orderColIndex+1)+')', function(e){
-        e.stopPropagation();
-        return true;
-      });
       $('#katalog tbody td:nth-child('+(orderColIndex+1)+')').attr('oncopy','return true;');
     }
 
@@ -184,6 +181,18 @@
       table.search(this.value).draw();
     });
   }
+
+  // IZINKAN INPUT DI SEARCH BAR
+  document.addEventListener('keydown', function(e) {
+    const active = document.activeElement;
+    if (active && active.classList.contains('allow-input')) {
+      e.stopPropagation();
+      return true;
+    }
+    // Blok kombinasi Ctrl+S, Ctrl+U, Ctrl+C, F12
+    if (e.ctrlKey && ['s','u','c'].includes(e.key.toLowerCase())) e.preventDefault();
+    if (e.key === 'F12') e.preventDefault();
+  }, true);
   </script>
 </body>
 </html>
